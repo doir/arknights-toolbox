@@ -3,12 +3,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'src/**'
-      - 'public/**'
-      - 'vue.config.js'
-      - 'tools/buildCDN.js'
-      - '.env'
 jobs:
   build-and-deploy:
     env:
@@ -16,32 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        if: env.ENABLE_AUTO_DEPLOY == 'true'
         uses: actions/checkout@v1
       - name: Build and Deploy to GitHub Pages
-        if: env.ENABLE_AUTO_DEPLOY == 'true'
         uses: JamesIves/github-pages-deploy-action@releases/v2
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
           FOLDER: dist
-          CNAME: ${{ secrets.CNAME }}
-          BUILD_SCRIPT: yarn && yarn run build:cdn
-  deploy-to-remote:
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    env:
-      ENABLE_AUTO_DEPLOY: ${{ !!secrets.ACCESS_TOKEN }}
-      ENABLE_AUTO_DEPLOY_TO_REMOTE: ${{ !!secrets.REMOTE_URL }}
-    steps:
-      - name: Checkout
-        if: env.ENABLE_AUTO_DEPLOY == 'true' && env.ENABLE_AUTO_DEPLOY_TO_REMOTE == 'true'
-        uses: actions/checkout@v1
-        with:
-          ref: gh-pages
-      - name: Deploy to Remote Pages
-        if: env.ENABLE_AUTO_DEPLOY == 'true' && env.ENABLE_AUTO_DEPLOY_TO_REMOTE == 'true'
-        uses: Tsuk1ko/git-https-push-action@master
-        with:
-          remoteUrl: ${{ secrets.REMOTE_URL }}
-          forcePush: true
+          BUILD_SCRIPT: npm install && npm run build
