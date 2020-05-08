@@ -1400,7 +1400,7 @@ export default {
         // 专精技能
         handle(this.pSetting.skills.elite[gi-2], pSettingInit.skills.elite[gi-2])
       }
-      _.forIn(todo.needs, (num, m) => {
+      _.forIn(todo.cost, (num, m) => {
         this.inputs[m].have = (this.inputsInt[m].have - num).toString();
         this.inputs[m].need = (this.inputsInt[m].need - num).toString();
       });
